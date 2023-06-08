@@ -6,10 +6,17 @@
 
 typedef enum {
 	OP_CONSTANT, // Ex. [00][23] <- [opcode][constant index] (2 bytes)
+	OP_NIL,
+	OP_TRUE,
+	OP_FALSE,
+	OP_EQUAL,
+	OP_GREATER,
+	OP_LESS, // Need to add !=, <=, and >= later
 	OP_ADD,
 	OP_SUBTRACT,
 	OP_MULTIPLY,
 	OP_DIVIDE,
+	OP_NOT,
 	OP_NEGATE,
 	OP_RETURN, // Ex. [01] <- opcode (1 byte)
 } OpCode;
