@@ -75,7 +75,7 @@ static void errorAtCurrent(const char* message) {
 	errorAt(&parser.current, message);
 }
 
-static void advance() {w
+static void advance() {
 	parser.previous = parser.current;
 
 	for (;;) {
@@ -147,12 +147,12 @@ static void binary() {
 
 	// Emit the operator instruction
 	switch (operatorType) {
-		case TOKEN_BANG_EQUAL: emitByte(OP_EQUAL, OP_NOT); break;
+		case TOKEN_BANG_EQUAL: emitBytes(OP_EQUAL, OP_NOT); break;
 		case TOKEN_EQUAL_EQUAL: emitByte(OP_EQUAL); break;
 		case TOKEN_GREATER: emitByte(OP_GREATER); break;
-		case TOKEN_GREATER_EQUAL: emitByte(OP_LESS, OP_NOT); break;
+		case TOKEN_GREATER_EQUAL: emitBytes(OP_LESS, OP_NOT); break;
 		case TOKEN_LESS: emitByte(OP_LESS); break;
-		case TOKEN_LESS_EQUAL: emitByte(OP_GREATER, OP_NOT); break;
+		case TOKEN_LESS_EQUAL: emitBytes(OP_GREATER, OP_NOT); break;
 		case TOKEN_PLUS: emitByte(OP_ADD); break;
 		case TOKEN_MINUS: emitByte(OP_SUBTRACT); break;
 		case TOKEN_STAR: emitByte(OP_MULTIPLY); break;
@@ -180,6 +180,10 @@ static void grouping() {
 static void number() {
 	double value = strtod(parser.previous.start, NULL);
 	emitConstant(NUMBER_VAL(value));
+}
+
+static void string() {
+	emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
 }
 
 static void unary() {
@@ -218,7 +222,7 @@ ParseRule rules[] = {
 	 [TOKEN_LESS] = {NULL, binary, PREC_COMPARISON},
 	 [TOKEN_LESS_EQUAL] = {NULL, binary, PREC_COMPARISON},
 	 [TOKEN_IDENTIFIER] = {NULL, NULL, PREC_NONE},
-	 [TOKEN_STRING] = {NULL, NULL, PREC_NONE},
+	 [TOKEN_STRING] = {string, NULL, PREC_NONE},
 	 [TOKEN_NUMBER] = {number, NULL, PREC_NONE},
 	 [TOKEN_AND] = {NULL, NULL, PREC_NONE},
 	 [TOKEN_CLASS] = {NULL, NULL, PREC_NONE},
@@ -277,7 +281,7 @@ bool compile(const char* source, Chunk* chunk) {
 	advance();
 	expression();
 
-	consume(TOKEN_EOF, "Expect end of exporession");
+	consume(TOKEN_EOF, "Expect end of expression");
 
 	endCompiler();
 

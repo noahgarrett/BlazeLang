@@ -11,6 +11,8 @@ typedef struct {
 	uint8_t* ip; // The location of the next instruction to be executed (Instruction Pointer)
 	Value stack[STACK_MAX];
 	Value* stackTop; // Points just past the last item in the stack
+
+	Obj* objects; // Stores a pointer to the head of the linked list of objects in memory
 } VM;
 
 typedef enum {
@@ -18,6 +20,9 @@ typedef enum {
 	INTERPRET_COMPILE_ERROR,
 	INTERPRET_RUNTIME_ERROR
 } InterpretResult;
+
+// Globally exposing the vm object defined in vm.c
+extern VM vm;
 
 // Initialize the virtual machine
 void initVM();
