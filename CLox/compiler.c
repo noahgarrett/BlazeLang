@@ -211,6 +211,22 @@ static void string() {
 	emitConstant(OBJ_VAL(copyString(parser.previous.start + 1, parser.previous.length - 2)));
 }
 
+static void namedVariable(Token name, bool canAssign) {
+	uint8_t arg = identifierConstant(&name);
+	
+	if (canAssign && match(TOKEN_EQUAL)) {
+		expression();
+		emitBytes(OP_SET_GLOBAL, arg);
+	}
+	else {
+		emitBytes(OP_GET_GLOBAL, arg);
+	}
+}
+
+static void variable(bool canAssign) {
+	namedVariable(parser.previous, canAssign);
+}
+
 static void unary() {
 	TokenType operatorType = parser.previous.type;
 
@@ -246,7 +262,7 @@ ParseRule rules[] = {
 	 [TOKEN_GREATER_EQUAL] = {NULL, binary, PREC_COMPARISON},
 	 [TOKEN_LESS] = {NULL, binary, PREC_COMPARISON},
 	 [TOKEN_LESS_EQUAL] = {NULL, binary, PREC_COMPARISON},
-	 [TOKEN_IDENTIFIER] = {NULL, NULL, PREC_NONE},
+	 [TOKEN_IDENTIFIER] = {variable, NULL, PREC_NONE},
 	 [TOKEN_STRING] = {string, NULL, PREC_NONE},
 	 [TOKEN_NUMBER] = {number, NULL, PREC_NONE},
 	 [TOKEN_AND] = {NULL, NULL, PREC_NONE},
@@ -278,12 +294,17 @@ static void parsePrecedence(Precedence precedence) {
 		return;
 	}
 
-	prefixRule();
+	bool canAssign = precedence <= PREC_ASSIGNMENT;
+	prefixRule(canAssign);
 
 	while (precedence <= getRule(parser.current.type)->precedence) {
 		advance();
 		ParseFn infixRule = getRule(parser.previous.type)->infix;
 		infixRule();
+	}
+
+	if (canAssign && match(TOKEN_EQUAL)) {
+		error("Invalid assignment target.");
 	}
 }
 
