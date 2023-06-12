@@ -10,7 +10,7 @@
 
 // Represents a single ongoing function call
 typedef struct {
-	ObjFunction* function;
+	ObjClosure* closure;
 	uint8_t* ip;
 	Value* slots; // Points to the VM's value stack at the first slot this function can use
 } CallFrame;
