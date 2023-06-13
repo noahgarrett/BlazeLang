@@ -24,6 +24,7 @@ typedef struct {
 
 	Table globals; // Hash table of globals
 	Table strings; // Hash table of strings
+	ObjUpvalue* openUpvalues;
 
 	Obj* objects; // Stores a pointer to the head of the linked list of objects in memory
 } VM;
