@@ -27,6 +27,11 @@ typedef struct {
 	ObjUpvalue* openUpvalues;
 
 	Obj* objects; // Stores a pointer to the head of the linked list of objects in memory
+
+	// Garbage Collection
+	int grayCount;
+	int grayCapacity;
+	Obj** grayStack;
 } VM;
 
 typedef enum {
