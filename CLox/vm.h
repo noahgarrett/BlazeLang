@@ -24,6 +24,9 @@ typedef struct {
 
 	Table globals; // Hash table of globals
 	Table strings; // Hash table of strings
+
+	ObjString* initString;
+
 	ObjUpvalue* openUpvalues;
 
 	size_t bytesAllocated;
