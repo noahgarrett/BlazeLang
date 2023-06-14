@@ -26,6 +26,9 @@ typedef struct {
 	Table strings; // Hash table of strings
 	ObjUpvalue* openUpvalues;
 
+	size_t bytesAllocated;
+	size_t nextGC;
+
 	Obj* objects; // Stores a pointer to the head of the linked list of objects in memory
 
 	// Garbage Collection

@@ -64,7 +64,10 @@ static ObjString* allocateString(char* chars, int length, uint32_t hash) {
 	string->chars = chars;
 	string->hash = hash;
 
+	// Temporarily pushes the value onto the stack to ensure safety as the table is resized in memory
+	push(OBJ_VAL(string));
 	tableSet(&vm.strings, string, NIL_VAL);
+	pop();
 
 	return string;
 }
