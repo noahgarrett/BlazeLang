@@ -13,11 +13,41 @@
 // Global variables are bad, usually should pass around pointers so the host process can do what they want with this
 VM vm;
 
-// -- START -- Native Functions
+#pragma region Native Functions
 static Value clockNative(int argCount, Value* args) {
 	return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
 }
-// -- END -- Native Functions
+
+static Value appendListNative(int argCount, Value* args) {
+	// Append a value to the end of a list increasing the list's length by 1
+	if (argCount != 2 || !IS_LIST(args[0])) {
+		// Handle Error
+	}
+
+	ObjList* list = AS_LIST(args[0]);
+	Value item = args[1];
+
+	appendToList(list, item);
+	return NIL_VAL;
+}
+
+static Value removeIndexListNative(int argCount, Value* args) {
+	// Delete an item form a list at the given index
+	if (argCount != 2 || !IS_LIST(args[0]) || !IS_NUMBER(args[1])) {
+		// Handle Error
+	}
+
+	ObjList* list = AS_LIST(args[0]);
+	int index = AS_NUMBER(args[1]);
+
+	if (!isValidListIndex(list, index)) {
+		// Handle Error
+	}
+
+	deleteFromList(list, index);
+	return NIL_VAL;
+}
+#pragma endregion
 
 static void resetStack() {
 	vm.stackTop = vm.stack;
@@ -81,6 +111,8 @@ void initVM() {
 
 	// Defining native functions
 	defineNative("clock", clockNative);
+	defineNative("append", appendListNative);
+	defineNative("remove", removeIndexListNative);
 }
 
 void freeVM() {
@@ -566,6 +598,87 @@ static InterpretResult run() {
 			}
 			case OP_METHOD: {
 				defineMethod(READ_STRING());
+				break;
+			}
+
+			// Lists
+			case OP_BUILD_LIST: {
+				// Stack before: [item1, item2, ..., itemN] and after: [list]
+				ObjList* list = newList();
+				uint8_t itemCount = READ_BYTE();
+
+				// Add items to the list
+				push(OBJ_VAL(list)); // So list isn't sweeped by the GC in appendToList()
+				for (int i = itemCount; i > 0; i--) {
+					appendToList(list, peek(i));
+				}
+
+				pop();
+
+				// Pop items from the stack
+				while (itemCount-- > 0) {
+					pop();
+				}
+
+				push(OBJ_VAL(list));
+				break;
+			}
+			case OP_INDEX_SUBSCR: {
+				// Stack before: [list, index] and after: [index(list, index)]
+				Value indexVal = pop();
+				Value listVal = pop();
+				Value result;
+
+				if (!IS_LIST(listVal)) {
+					runtimeError("Invalid type to index into.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				ObjList* list = AS_LIST(listVal);
+
+				if (!IS_NUMBER(indexVal)) {
+					runtimeError("List index is not a number.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				int index = AS_NUMBER(indexVal);
+
+				if (!isValidListIndex(list, index)) {
+					runtimeError("List index out of range.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				result = indexFromList(list, index);
+				push(result);
+				break;
+			}
+			case OP_STORE_SUBSCR: {
+				// Stack before: [list, index, item] and after: [item]
+				Value item = pop();
+				Value indexVal = pop();
+				Value listVal = pop();
+
+				if (!IS_LIST(listVal)) {
+					runtimeError("Cannot store value in a non-list.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				ObjList* list = AS_LIST(listVal);
+
+				if (!IS_NUMBER(indexVal)) {
+					runtimeError("List index is not a number.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				int index = AS_NUMBER(indexVal);
+
+				if (!isValidListIndex(list, index)) {
+					runtimeError("Invalid list index.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				storeToList(list, index, item);
+				push(item);
 				break;
 			}
 		}

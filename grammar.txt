@@ -26,7 +26,7 @@ whileStmt       -> "while" "(" expression ")" statement ;
 block           -> "{" declaration* "}" ;
 
 expression      -> assignment ;
-assignment      -> ( call "." )? IDENTIFIER "=" assignment 
+assignment      -> ( call "." )? IDENTIFIER ( "[" logic_or "]" )* "=" assignment 
                     | logic_or ;
 
 logic_or        -> logic_and ( "or" logic_and )* ;
@@ -38,7 +38,11 @@ factor          -> unary ( ( "/" | "*" ) unary )*
 
 unary           -> ( "!" | "-" ) unary
                     | call
-call            -> primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
+
+call            -> subscript ( "(" arguments? ")" | "." IDENTIFIER )* ;
+
+subscript       -> primary ( "[" logic_or "]" )* ;
+
 primary         -> "true"
                     | "false"
                     | "nil"
@@ -47,4 +51,7 @@ primary         -> "true"
                     | STRING
                     | IDENTIFIER
                     | "(" expression ")"
-                    | "super" "." IDENTIFIER ;
+                    | "super" "." IDENTIFIER
+                    | "[" list_display? "]" ;
+
+list_display   -> logic_or ( "," logic_or )* ( "," )? ;

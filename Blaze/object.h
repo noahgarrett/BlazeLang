@@ -15,6 +15,7 @@
 #define IS_INSTANCE(value)		isObjType(value, OBJ_INSTANCE)
 #define IS_NATIVE(value)		isObjType(value, OBJ_NATIVE)
 #define IS_STRING(value)		isObjType(value, OBJ_STRING)
+#define IS_LIST(value)			isObjType(value, OBJ_LIST)
 
 #define AS_BOUND_METHOD(value)	((ObjBoundMethod*)AS_OBJ(value))
 #define AS_CLASS(value)			((ObjClass*)AS_OBJ(value))
@@ -24,6 +25,7 @@
 #define AS_NATIVE(value)		(((ObjNative*)AS_OBJ(value))->function)
 #define AS_STRING(value)		((ObjString*)AS_OBJ(value))
 #define AS_CSTRING(value)		(((ObjString*)AS_OBJ(value))->chars)
+#define AS_LIST(value)			((ObjList*)AS_OBJ(value))
 
 typedef enum {
 	OBJ_BOUND_METHOD,
@@ -33,7 +35,8 @@ typedef enum {
 	OBJ_INSTANCE,
 	OBJ_NATIVE,
 	OBJ_STRING,
-	OBJ_UPVALUE
+	OBJ_UPVALUE,
+	OBJ_LIST
 } ObjType;
 
 struct Obj {
@@ -96,6 +99,28 @@ typedef struct {
 	Value receiver;
 	ObjClosure* method;
 } ObjBoundMethod;
+
+#pragma region Lists
+typedef struct {
+	Obj obj;
+	int count;
+	int capacity;
+	Value* items;
+} ObjList;
+
+ObjList* newList();
+
+void appendToList(ObjList* list, Value value);
+
+void storeToList(ObjList* list, int index, Value value);
+
+Value indexFromList(ObjList* list, int index);
+
+void deleteFromList(ObjList* list, int index);
+
+bool isValidListIndex(ObjList* list, int index);
+#pragma endregion
+
 
 ObjBoundMethod* newBoundMethod(Value receiver, ObjClosure* method);
 ObjClass* newClass(ObjString* name);
