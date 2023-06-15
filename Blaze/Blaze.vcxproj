@@ -24,6 +24,7 @@
     <ProjectGuid>{57edfd76-6783-4236-80f4-ffa0b15826ca}</ProjectGuid>
     <RootNamespace>CLox</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Blaze</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
