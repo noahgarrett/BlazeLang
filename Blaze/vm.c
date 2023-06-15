@@ -47,6 +47,27 @@ static Value removeIndexListNative(int argCount, Value* args) {
 	deleteFromList(list, index);
 	return NIL_VAL;
 }
+
+static Value sliceListNative(int argCount, Value* args) {
+	// Slice the list to form a new list between the specified indexes
+	if (argCount < 3 || argCount > 4) {
+		// Handle Error
+	}
+
+	ObjList* list = AS_LIST(args[0]);
+	int start = AS_NUMBER(args[1]);
+	int end = AS_NUMBER(args[2]);
+	int step = argCount == 4 ? AS_NUMBER(args[3]) : 1;
+
+	ObjList* slicedList = newList();
+
+	// Copy elements from original array to the slice with the step
+	for (int i = start; i < end; i += step) {
+		appendToList(slicedList, list->items[i]);
+	}
+
+	return OBJ_VAL(slicedList);
+}
 #pragma endregion
 
 static void resetStack() {
@@ -113,6 +134,7 @@ void initVM() {
 	defineNative("clock", clockNative);
 	defineNative("append", appendListNative);
 	defineNative("remove", removeIndexListNative);
+	defineNative("slice", sliceListNative);
 }
 
 void freeVM() {

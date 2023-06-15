@@ -6,7 +6,6 @@ Will be extended to be switched into the Blaze Language.
 ## Language Breakdown (in lang.blaze)
 ```kotlin
 
-
 // Single-Line Comment
 //
 
@@ -32,7 +31,8 @@ foo = 69;
 
 // Lists
 var list = [1, "apple", true, nil];
-list[0] // Access an index of a list
+list[0]     // Access an index of a list
+list[-1]    // Access an index from the negative range (-1 = last item in the list)
 
 // User-Defined Functions
 fun foo() {
@@ -97,7 +97,11 @@ class Bar < Foo {
 // Built-In Functions
 print "value";          // Print a value to the console
 clock();                // Returns the current time in seconds (number)
-append(list, value)     // Appends a value to a list
-remove(list, index)     // Removes a value at a specified index of the list
+
+// List Built-In Functions
+append(list, value)             // Appends a value to a list
+remove(list, index)             // Removes a value at a specified index of the list
+slice(list, start, end, step)   // Slices the current list and returns a new one.
+
 
 ```
