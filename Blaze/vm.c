@@ -643,7 +643,12 @@ static InterpretResult run() {
 
 				int index = AS_NUMBER(indexVal);
 
-				if (!isValidListIndex(list, index)) {
+				if (index >= 0 && !isValidListIndex(list, index)) {
+					runtimeError("List index out of range.");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+				if (index < 0 && (index * -1) > list->count) {
 					runtimeError("List index out of range.");
 					return INTERPRET_RUNTIME_ERROR;
 				}

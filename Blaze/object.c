@@ -107,7 +107,12 @@ void storeToList(ObjList* list, int index, Value value) {
 }
 
 Value indexFromList(ObjList* list, int index) {
-	return list->items[index];
+	if (index >= 0) {
+		return list->items[index];
+	}
+	else {
+		return list->items[list->count + index];
+	}
 }
 
 void deleteFromList(ObjList* list, int index) {
