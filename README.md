@@ -32,7 +32,8 @@ foo = 69;
 
 // Lists
 var list = [1, "apple", true, nil];
-list[0] // Access an index of a list
+list[0]     // Access an index of a list
+list[-1]    // Access an index from the negative range (-1 = last item in the list)
 
 // User-Defined Functions
 fun foo() {
