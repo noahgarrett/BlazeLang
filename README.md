@@ -18,6 +18,9 @@ true false  // Booleans
 // Arithmetic Operations
 + - * /
 
+// String Concatenation
+var cat = "white " + "cat";
+
 // Comparison Operations
 < <= > >= == and or
 
