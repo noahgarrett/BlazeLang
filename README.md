@@ -3,58 +3,88 @@ Foundationally created via reading / studying the book [**Crafting Interpreters*
 
 Will be extended to be switched into the Blaze Language.
 
-## Language Breakdown (in lang.blaze)
-```kotlin
+# Language Breakdown
+All changes should be treated as they can change at any time. This README will be updated for every version release. A full file breakdown is located in `lang.blaze`.
 
+## Comments
+```js
 // Single-Line Comment
-//
+```
 
-// Data Types
-45          // Numbers
-"foo"       // Strings
-nil         // Null
-true false  // Booleans
-[]          // Lists
+## Data Types
+- Numbers can be integers or doubles.
+```go
+45 45.43            // Numbers
+"foo"               // Strings
+nil                 // Null Value
+true false          // Booleans
+[1, "two", true]    // Lists
+```
 
-// Arithmetic Operations
-+ - * /
+## Arithmetic Operators
+```go
++   // Addition
+-   // Subtraction
+*   // Multiplication
+/   // Division
+```
 
-// Comparison Operations
-< <= > >= == and or
+## Comparison Operators
+```cs
+<       // Less Than
+<=      // Less Than Equal To
+>       // Greater Than
+>=      // Greater Than Equal To
+==      // Equal To
+and     // And Comparison (&&)
+or      // Or Comparison (||)
+```
 
-// Variable Declaration
-var foo;
-var bar = "foo";
+## Variable Declaration
+```cs
+var foo;            // Un-initialized Variable
+var bar = "foo";    // Initialized Variable
+```
 
-// Variable Assignment
-foo = 69;
+## Variable Assignment
+```cs
+foo = 69.420;       // Assigning a Variable
+```
 
-// Lists
-var list = [1, "apple", true, nil];
-list[0]     // Access an index of a list
-list[-1]    // Access an index from the negative range (-1 = last item in the list)
+## Lists
+```js
+var list = [1, "apple", true, nil];     // Lists can store multiple data-types
+list[0];                                // Access a list item by index
+list[-1];                               // Use negative access modifier for end of list
+```
 
-// User-Defined Functions
-fun foo() {
-    var bar = true;
-    
-    return bar;     // Return Statements
+## User-Defined Functions
+```kotlin
+// Function Declaration
+fun add(a, b) {
+    var result = a + b;
+
+    return result;
 }
 
-// Nested User-Defined Functions
-fun foo() {
-    var test = true;
+// Function Call
+add(5, 5);
 
-    // Nested Scopes
-    fun bar() {
+// Nested Functions
+fun parent() {
+    var test = 1;
+
+    fun child() {
         return test;
     }
 
-    var resultOfTest = bar();
-    return resultOfTest;
+    return child;   // Returns the function object, when called it will return '1';
 }
+```
 
-// Conditionals
+## Conditonal Statements
+```cs
+// If - ElseIf - Else Statements
 if (10 > 10) {
     var a = 10;
 } else if (10 == 10) {
@@ -62,19 +92,29 @@ if (10 > 10) {
 } else {
     var a = 0;
 }
+```
 
-// For Loops
+## Loops
+```c
+// Classic For Loop
 for (var i = 0; i < 10; i = i + 1) {
+
+    // Infinite For Loop
+    for (;;) {
+
+    }
 
 }
 
-// While Loops
+// While Loop
 while (true) {
 
 }
+```
 
-// Classes
-class Foo {
+## Classes (OOP)
+```js
+class Parent {
     // Constructor
     init() {
         // Class Variables
@@ -83,25 +123,29 @@ class Foo {
 
     // User-Defined Methods
     method() {
-        return 69;
+        return 420;
     }
 }
 
-// Inheriting Classes
-class Bar < Foo {
-    init() {
-        this.bubbles = super.method();
+// Inheritance
+class Child < Parent {
+    // Constructor is optional
+
+    callParentMethod() {
+        // 'super' keyword to reference parent class methods
+        return super.method();
     }
 }
+```
 
-// Built-In Functions
-print "value";          // Print a value to the console
-clock();                // Returns the current time in seconds (number)
+## Native Functions
+```js
+// Core Module
+print "value";      // Prints a value to the console
+clock();            // Gets the current time in seconds
 
-// List Built-In Functions
+// List Functions
 append(list, value)             // Appends a value to a list
 remove(list, index)             // Removes a value at a specified index of the list
 slice(list, start, end, step)   // Slices the current list and returns a new one.
-
-
 ```
